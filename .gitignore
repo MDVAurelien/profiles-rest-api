@@ -1,0 +1,15 @@
+__pycache__/
+.idea/workspace.xml
+*.log
+*.pot
+*.pyc
+/media
+/static
+/venv
+db.sqlite3
+dev_settings.py
+django.mo
+form_settings.py
+local_settings.py
+prod_settings.py
+var/
