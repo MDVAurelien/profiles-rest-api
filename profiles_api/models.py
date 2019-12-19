@@ -1,30 +1,34 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import BaseUserManager
 
 
 class UserProfileManager(BaseUserManager):
-    """Manager for user profile"""
+    """Manager for user profiles"""
 
     def create_user(self, email, name, password=None):
         """Create a new user profile"""
         if not email:
-            raise ValueError('User must have a email address')
+            raise ValueError('User must have an email address')
 
         email = self.normalize_email(email)
         user = self.model(email=email, name=name)
-        user.set_password(password)
 
+        user.set_password(password)
         user.save(using=self._db)
 
         return user
 
-    def create_superuser(self, name, email, password):
-        """Create a superuser with given details"""
+    def create_superuser(self, email, name, password):
+        """Create and save a new superuser with given details"""
         user = self.create_user(email, name, password)
+
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
+
+        return user
 
 
 class UserProfile(AbstractBaseUser, PermissionsMixin):
@@ -36,19 +40,18 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     objects = UserProfileManager()
 
-    # Log user with email and not name
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 
-    def get_ful_name(self):
-        """Retrieve the full name of user"""
+    def get_full_name(self):
+        """Retrieve full name of user"""
         return self.name
 
     def get_short_name(self):
-        """Retrieve the short name of user"""
+        """Retrieve shot name of user"""
         return self.name
 
     def __str__(self):
-        """Return String representation of our user"""
+        """Return string representation of our user"""
         return self.email
 
